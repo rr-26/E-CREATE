@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chart using XML Data</title>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src = "https://code.highcharts.com/highcharts.js"></script>  
+<script src = "https://code.highcharts.com/highcharts-3d.js"></script>
+<script type="text/javascript">
+    window.onload = function() {
+        var dataPoints = [];
+	 
+        function getDataPointsFromCSV(csv) {
+            var dataPoints = csvLines = points = [];
+            csvLines = csv.split(/[\r?\n|\r|\n]+/);         
+		        
+            for (var i = 1; i < 10; i++)   //csvLines.length
+                if (csvLines[i].length > 0) {
+                    points = csvLines[i].split(",");
+                    dataPoints.push({ 
+                        x: parseFloat(points[0]), 
+                        y: parseFloat(points[1]) 		
+                    });
+                }
+            return dataPoints;
+        }
+	
+	// $.get("risk_distrctwise_ST.csv", function(data) {
+	//     var chart = new CanvasJS.Chart("chartContainer", {
+	// 	    title: {
+	// 	         text: "Chart from CSV",
+	// 	    },
+	// 	    data: [{
+	// 	         type: "pie",
+	// 	         dataPoints: getDataPointsFromCSV(data)
+	// 	      }]
+	//      });
+		
+	//       chart.render();
+
+	// });
+
+	$.get("risk_distrctwise_ST.csv", function(data) {
+	    var chart = {      
+               type: 'pie',     
+               options3d: {
+                  enabled: true,
+                  alpha: 45,
+                  beta: 0
+               }
+            };
+		var title = {
+               text: 'Pie Chart for Districts'   
+            };
+        var tooltip = {
+               pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            };
+        var plotOptions = {
+               pie: {
+                  allowPointSelect: true,
+                  cursor: 'pointer',
+                  depth: 35,
+                  
+                  dataLabels: {
+                     enabled: true,
+                     format: '{point.name}'
+                  }
+               }
+            };   
+        var series = [{
+               type: 'pie',
+               name: 'NDVI',
+               data: [{dataPoints:  getDataPointsFromCSV(data)}
+               ]
+            }];     
+            var json = {};   
+            json.chart = chart; 
+            json.title = title;       
+            json.tooltip = tooltip; 
+            json.plotOptions = plotOptions; 
+            json.series = series;   
+            $('#container').highcharts(json); 
+	     // chart.render();
+
+	});
+  }
+</script>
+</head>
+<body>
+	<div id="chartContainer" style="width:100%; height:300px;"></div>
+</body>
+</html>

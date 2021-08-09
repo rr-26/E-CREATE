@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chart using XML Data</title>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script type="text/javascript">
+    window.onload = function() {
+        var dataPoints = [];
+	 
+        function getDataPointsFromCSV(csv) {
+            var dataPoints = csvLines = points = [];
+            csvLines = csv.split(/[\r?\n|\r|\n]+/);         
+		        
+            // for (var i = 1; i < 10; i++)   //csvLines.length
+            //     if (csvLines[i].length > 0) {
+            //         points = csvLines[i].split(",");
+            //         dataPoints.push({ 
+            //             x: parseFloat(points[0]), 
+            //             y: parseFloat(points[1]) 		
+            //         });
+            //     }
+            points0 = csvLines[0].split(",");
+            points = csvLines[6].split(",");
+            for (var i = 0; i < points.length; i++)
+            	{
+            		dataPoints.push({
+            			y: parseFloat(points[i]),
+            			label: String(points0[i])
+            		});
+            	}
+            return dataPoints;
+        }
+	
+	$.get("risk_distrctwise_ST.csv", function(data) {
+	    var chart = new CanvasJS.Chart("chartContainer", {
+		    title: {
+		         text: "Chart from CSV",
+		    },
+		    
+		    data: [{
+		         type: "pie",
+		         yValueFormatString: "##0.00\"%\"",
+				 indexLabel: "{label} {y}",
+		         dataPoints: getDataPointsFromCSV(data)
+		      }]
+	     });
+		
+	      chart.render();
+
+	});
+  }
+</script>
+</head>
+<body>
+	<div id="chartContainer" style="width:100%; height:300px;"></div>
+</body>
+</html>
